@@ -12,13 +12,20 @@ describe Rack::Throttle::MethodAndPath do
           "POST" => 5,
           "GET"  => 10
         },
-        "paths"   => {},
+        "paths"   => {
+          "/bar/.*/muh" => 5 
+        },
         "default" => 10
       }
     }
   end
 
   let(:app) { described_class.new(target_app, options) }
+  
+  it "should be allowed if not seen this second" do
+    get "/bar/124/muh"
+    expect(last_response.body).to show_allowed_response
+  end
 
   it "should be allowed if not seen this second" do
     get "/foo"

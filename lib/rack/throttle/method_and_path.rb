@@ -19,7 +19,7 @@ module Rack
 
       def path_limit(request)
         limits["paths"].find { |k,v| 
-          request.path.match(k)
+          request.path.to_s.match(k)
         }
       end
       
@@ -35,8 +35,8 @@ module Rack
       end
 
       def client_identifier(request)
-        if path_limit(request)
-          "#{ip(request)}_#{request.path}"
+        if (limit = path_limit(request))
+          "#{ip(request)}_#{limit[0]}"
         elsif method_limit(request)
           "#{ip(request)}_#{request.request_method}"
         else
